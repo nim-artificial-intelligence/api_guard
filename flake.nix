@@ -57,6 +57,7 @@
           name = "api_guard";
           buildInputs = with pkgs; [
             pythonEnv
+            busybox # grep, xargs
             bashInteractive 
           ];
 
@@ -71,7 +72,10 @@
 
             # Load .env file from the specified path
             if [ -f "$ENV_PATH" ]; then
-                export $(cat "$ENV_PATH" | grep -v '^#' | xargs)
+                export $(cat "$ENV_PATH" | ${pkgs.busybox}/bin/grep -v '^#' | ${pkgs.busybox}/bin/xargs)
+            else
+                # DOCKER 
+                export $(cat "/tmp/.env" | ${pkgs.busybox}/bin/grep -v '^#' | ${pkgs.busybox}/bin/xargs)
             fi
 
             # Set default values if variables are not set in .env file
@@ -97,7 +101,7 @@
         # Usage:
         #    nix build .#docker
         #    docker load < result
-        #    docker run -p5000:5000 api_guard:lastest
+        #    docker run -p5000:5000 -v ${realpath ./rundir):/tmp api_guard:lastest
         packages.docker = pkgs.dockerTools.buildImage {
           name = "api_guard";       # give docker image a name
           tag = "latest";     # provide a tag
@@ -116,7 +120,7 @@
                 "/tmp" = { }; 
                 };
             ExposedPorts = {
-              "5100/tcp" = {};
+              "5000/tcp" = {};
             };
           };
         };

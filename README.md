@@ -7,6 +7,12 @@ from excessive use. It provides a flexible way to control the flow of requests,
 ensuring APIs are used within predefined limits, thereby preventing overloading
 and potential service disruptions.
 
+**It tells clients how long they have to delay their requests or, optionally,
+performs the delay for them.**
+
+So, to integrate it with your clients, you only have to make one blocking http
+request.
+
 ## Features
 
 - **Rate Limiting**: Dynamically control the number of API requests allowed over
@@ -17,6 +23,8 @@ and potential service disruptions.
   only authorized modifications to rate limits.
 - **Dual Delay Handling**: Choose between having the service handle request
   delays or providing delay information for client-side handling.
+
+![](./apiguard.drawio.png)
 
 ## Getting Started
 
@@ -43,13 +51,22 @@ and potential service disruptions.
 
 ### Configuration
 
-1. Create a `.env` file in the project root with the following content:
+1. Create a `.env` file at `${XDG_CONFIG_HOME}/api_guard/.env` (which usually is: `~/.config/api_guard/.env`) with the following content:
    ```
-   RATE_LIMIT=60
+   RATE_LIMIT=500
    PORT=5000
    AUTH_TOKEN=YourSecretAuthToken
    ```
 2. Replace `YourSecretAuthToken` with your desired token.
+
+Note that the minimum delay is initially set to: 
+
+```python
+request_default_delay = (60 / request_limit_per_60_seconds) * 0.25
+```
+
+For a rate limit of 500 (requests per minute), this works out to 30ms. You can
+change it via a POST request at runtime. See below.
 
 ### Running the Service
 
@@ -76,9 +93,32 @@ python api_guard.py
     gunicorn -w 1 -b 0.0.0.0:$PORT --access-logfile $LOGDIR/access.log --error-logfile $LOGDIR/error.log api_guard:app
     ```
 
-### Running via nix-built Docker Container
+### Running the Service via Docker Container
 
-To be written
+1. Obtain the container from the download link you received (or build it
+   yourself via `nix build .#docker`)
+2. Load the image into docker:
+    ```bash
+    docker load < downloaded_file
+    # or, if you build it with nix:
+    docker load < result
+    ```
+3. Create an .env file, see [configuration](#configuration) and set its PORT to
+   5000. That port is just used inside the container:
+   ```
+   PORT=5000
+   LOGDIR=/tmp
+   ```
+
+4. Create a run directory and move the .env file there:
+    ```bash
+    mkdir rundir
+    mv .env rundir/
+    ```
+
+4. Start the container (replace YOUR_PORT with the port you want):
+    ```bash
+    docker run -p YOUR_PORT:5000 -v $(realpath ./rundir):/tmp api_guard:latest
 
 ## Usage
 
@@ -121,7 +161,7 @@ To be written
 #### /get_rate_limit
 - Success:
   ```json
-  { "current_rate_limit": 60 }
+  { "current_rate_limit": 60, "default_delay": 30 }
   ```
 
 #### /set_rate_limit
@@ -136,7 +176,7 @@ To be written
 
 ## Contributing
 
-Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests.
+Contributions are welcome! Submit a PR or send a patch file our way.
 
 ## License
 
