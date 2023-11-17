@@ -139,7 +139,7 @@ python api_guard.py
     - Returns a JSON object with `current_rate_limit` showing the current rate limit value (number of requests allowed per 60 seconds).
 
 - **POST /set_rate_limit**
-  - Params: `new_limit` (integer)
+  - Params: `new_limit` (integer), `default_delay` (integer) in milliseconds
   - Headers: `Authorization: [Auth Token]`
   - Description: Update the rate limit to a new value.
   - **Response**:
