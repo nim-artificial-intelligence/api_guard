@@ -13,11 +13,20 @@ load_dotenv(env_path)
 
 request_limit_per_60_seconds = int(os.getenv('RATE_LIMIT', 500))
 request_default_delay = (60 / request_limit_per_60_seconds) * 0.25
-
-print('default delay', request_default_delay)
+slug = os.getenv('SLUG', '')
+if slug and not slug.startswith('/'):
+    slug = '/' + slug
 
 port_number = int(os.getenv('PORT', 5000))
 auth_token = os.getenv('AUTH_TOKEN')
+
+print('Using the following configuration')
+print(f'    - slug           : {slug}')
+print(f'    - port           : {port_number}')
+print(f'    - local base URL : http://127.0.0.1:{port_number}{slug}')
+print(f'    - request limit  : {request_limit_per_60_seconds} per minute')
+print(f'    - default delay  : {request_default_delay}')
+print(f'    - auth token     : {auth_token}')
 
 app = Flask(__name__)
 request_timestamps = deque()
@@ -31,13 +40,13 @@ def verify_auth_token():
         abort(401, description="Unauthorized")
 
 
-@app.route('/get_rate_limit', methods=['GET'])
+@app.route(f'{slug}/get_rate_limit', methods=['GET'])
 def get_rate_limit():
     verify_auth_token()
     return jsonify({"current_rate_limit": request_limit_per_60_seconds, "default_delay": request_default_delay})
 
 
-@app.route('/set_rate_limit', methods=['POST'])
+@app.route(f'{slug}/set_rate_limit', methods=['POST'])
 def set_rate_limit():
     verify_auth_token()
     global request_limit_per_60_seconds
@@ -75,7 +84,7 @@ def set_rate_limit():
     return jsonify(ret)
 
 
-@app.route('/request_access', methods=['GET'])
+@app.route(f'{slug}/request_access', methods=['GET'])
 def request_access():
     verify_auth_token()
     handle_delay = request.args.get('handle_delay', 'False').lower() == 'true'

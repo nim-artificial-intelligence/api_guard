@@ -56,7 +56,14 @@ request.
    RATE_LIMIT=500
    PORT=5000
    AUTH_TOKEN=YourSecretAuthToken
+   SLUG=/api_guard
    ```
+   Note: the slug parameter is to add a prefix to the URL and is optional. If
+   you use e.g. `SLUG=/api_guard`, your endpoint URLs change from
+   `http://host:port/...` to `http://host:port/api_guard/...`. This makes it easier
+   to add the service to an existing web server or deploy multiple instances of
+   api_guard for different APIs.
+
 2. Replace `YourSecretAuthToken` with your desired token.
 
 Note that the minimum delay is initially set to: 
