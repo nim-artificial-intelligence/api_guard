@@ -7,6 +7,8 @@ import os
 
 
 # Define the path to the .env file
+if 'XDG_CONFIG_HOME' in os.environ:
+    print('XDG_CONFIG_HOME is', os.environ['XDG_CONFIG_HOME'])
 env_path = os.path.join(os.getenv('XDG_CONFIG_HOME', './'), 'api_guard/.env')
 print('Trying to load config from:', env_path)
 load_dotenv(env_path)
