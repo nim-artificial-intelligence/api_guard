@@ -187,6 +187,34 @@ curl http://127.0.0.1:${PORT}${SLUG}/request_access
   - **Example**: 
     - [`./test_set_params.sh`](./test_set_params.sh): how to set values via `/set_rate_limit`
 
+### Furhat Kotlin Example
+
+Here comes a code snippet you can use in a Furhat robot skill which is what this
+service has initially been developed for:
+
+1. Add the `khttp` dependency to your `build.gradle`:
+    ```gradle
+    dependencies {
+        implementation 'com.furhatrobotics.furhatos:furhat-commons:2.7.1'
+        implementation 'com.theokanning.openai-gpt3-java:service:0.16.0'
+        compile 'khttp:khttp:1.0.0'
+    }
+    ```
+
+2. Before making a request to your API, insert the following lines:
+    ```kotlin
+        // make a khttp request to api guard
+        val API_GUARD_URL = "https://your.domain.org/api_guard"
+        val API_GUARD_KEY = "YOUR AUTH TOKEN"
+        val guard_response = khttp.get(
+                                "$API_GUARD_URL/request_access?handle_delay=true", 
+                                headers=mapOf("Authorization" to API_GUARD_KEY)
+                                ).text
+        print("API Guard said: $guard_response")
+    ```
+
+This will let the server take care of rate limiting your API calls.
+
 ### Example Responses
 
 Please see the examples:
