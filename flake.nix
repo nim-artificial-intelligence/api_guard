@@ -32,6 +32,7 @@
             bat
             gnused
             pythonEnv
+            curl
           ];
 
           buildInputs = with pkgs; [
