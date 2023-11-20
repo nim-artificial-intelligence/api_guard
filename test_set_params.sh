@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-AUTH_TOKEN=renerocksai
+AUTH_TOKEN=${AUTH_TOKEN:-renerocksai}
 
 curl \
     -X POST                                             \

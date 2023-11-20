@@ -163,8 +163,8 @@ curl http://127.0.0.1:${PORT}${SLUG}/request_access
     - If `handle_delay` is `false` or not provided: Returns a JSON object with `delay_ms` indicating the number of milliseconds to wait before making the API request.
     - If `handle_delay` is `true`: Performs the delay server-side and returns a JSON object with `delay_ms` set to 0.
   - **Examples**: 
-    - [`./test_delay_handled.sh`](./test_delay_handled.sh): how to use `/request_access` **with `handle_delay=true`**
-    - [`./test_delay_unhandled.sh`](./test_delay_unhandled.sh): how to use `/request_access` **without `handle_delay=true`**
+    - [`AUTH_TOKEN=YOUR_TOKEN ./test_delay_handled.sh`](./test_delay_handled.sh): how to use `/request_access` **with `handle_delay=true`**
+    - [`AUTH_TOKEN=YOUR_TOKEN ./test_delay_unhandled.sh`](./test_delay_unhandled.sh): how to use `/request_access` **without `handle_delay=true`**
 
 
 - **GET /get_rate_limit**
@@ -175,7 +175,7 @@ curl http://127.0.0.1:${PORT}${SLUG}/request_access
         - `current_rate_limit` showing the current rate limit value (number of requests allowed per 60 seconds).
         - `default_delay` showing the current default delay in ms.
   - **Example**: 
-    - [`./test_get_params.sh`](./test_get_params.sh): how to retrieve values via `/get_rate_limit`
+    - [`AUTH_TOKEN=YOUR_TOKEN ./test_get_params.sh`](./test_get_params.sh): how to retrieve values via `/get_rate_limit`
 
 - **POST /set_rate_limit**
   - JSON Params: `new_limit` (integer), `default_delay` (integer) in milliseconds
@@ -185,7 +185,7 @@ curl http://127.0.0.1:${PORT}${SLUG}/request_access
     - On success: Returns a JSON object with `success` set to `true` and `new_rate_limit` indicating the updated rate limit value.
     - On failure (e.g., invalid limit value or missing parameters): Returns a JSON object with `success` set to `false` and an `error` message detailing the issue.
   - **Example**: 
-    - [`./test_set_params.sh`](./test_set_params.sh): how to set values via `/set_rate_limit`
+    - [`AUTH_TOKEN=YOUR_TOKEN ./test_set_params.sh`](./test_set_params.sh): how to set values via `/set_rate_limit`
 
 ### Furhat Kotlin Example
 
