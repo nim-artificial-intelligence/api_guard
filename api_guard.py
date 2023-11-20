@@ -74,12 +74,12 @@ def set_rate_limit():
         new_delay = int(new_delay)
         if new_delay > 0:
             with timestamps_lock:
-                request_limit_per_60_seconds = new_delay
-                ret.update({"success": True, "new_rate_limit": new_delay})
+                request_default_delay = new_delay
+                ret.update({"success": True, "new_default_delay": new_delay})
         else:
-            ret.update({"success": False, "error": "Rate limit must be positive"})
+            ret.update({"success": False, "error": "Default delay must be positive"})
     else:
-        ret.update({"success": False, "error": "Invalid rate limit value"})
+        ret.update({"success": False, "error": "Invalid default delay value"})
 
     if ret["success"] is False:
         return jsonify(ret), 400

@@ -82,6 +82,15 @@ Execute the following command to start the server:
 python api_guard.py
 ```
 
+Test it via:
+
+```bash
+# export .env file
+export $(cat "$XDG_CONFIG_HOME/api_guard/.env" | grep -v '^#' | xargs)
+# run a simple request
+curl http://127.0.0.1:${PORT}${SLUG}/request_access
+```
+
 ### Running the Service in Production
 
 1. Install gunicorn:
@@ -98,6 +107,14 @@ python api_guard.py
     export $(cat "$XDG_CONFIG_HOME/api_guard/.env" | grep -v '^#' | xargs)
     # start gunicorn
     gunicorn -w 1 -b 0.0.0.0:$PORT --access-logfile $LOGDIR/access.log --error-logfile $LOGDIR/error.log api_guard:app
+    ```
+
+3. Test it via:
+    ```bash
+    # export .env file
+    export $(cat "$XDG_CONFIG_HOME/api_guard/.env" | grep -v '^#' | xargs)
+    # run a simple request
+    curl http://127.0.0.1:${PORT}${SLUG}/request_access
     ```
 
 ### Running the Service via Docker Container
@@ -123,10 +140,17 @@ python api_guard.py
     mv .env rundir/
     ```
 
-4. Start the container (replace YOUR_PORT with the port you want):
+5. Start the container (replace YOUR_PORT with the port you want):
     ```bash
     docker run -p YOUR_PORT:5000 -v $(realpath ./rundir):/tmp api_guard:latest
 
+6. Test it via:
+    ```bash
+    # export .env file
+    export $(cat "$XDG_CONFIG_HOME/api_guard/.env" | grep -v '^#' | xargs)
+    # run a simple request
+    curl http://127.0.0.1:${PORT}${SLUG}/request_access
+    ```
 ## Usage
 
 ### Endpoints
@@ -174,7 +198,7 @@ python api_guard.py
 #### /set_rate_limit
 - Success:
   ```json
-  { "success": true, "new_rate_limit": 80 }
+  { "success": true, "new_rate_limit": 80, "new_default_delay": 45 }
   ```
 - Failure:
   ```json
